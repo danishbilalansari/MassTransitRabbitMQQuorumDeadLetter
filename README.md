@@ -45,24 +45,24 @@ MassTransitHostOptions are configured to specify the wait time until the bus sta
 1. Install .NET SDK: Ensure that the .NET SDK is installed on your machine. You can download it from the .NET official website.
 2. Install RabbitMQ: Download and install RabbitMQ from the RabbitMQ official website. Follow the installation instructions for your specific operating system.
 3. Start RabbitMQ: After installation, start RabbitMQ server. You can usually do this through the command line or terminal with:
-   rabbitmq-server
+> rabbitmq-server
 4. Create a New Solution: Create a new solution using the .NET CLI or Visual Studio:
-   dotnet new sln -n MyRabbitMqApp
+>  dotnet new sln -n MyRabbitMqApp
 5. Create Projects: Create the Producer, Contracts and Consumer projects:
-   dotnet new console -n Producer
-   dotnet new classlib -n Contracts
-   dotnet new console -n Consumer
+>  dotnet new console -n Producer  <br>
+>  dotnet new classlib -n Contracts  <br>
+>  dotnet new console -n Consumer
 7. Add References: Add a reference of Contracts to Producer and the Consumer project:
-   dotnet add Producer reference Contracts
-   dotnet add Consumer reference Contracts
+>  dotnet add Producer reference Contracts  <br>
+>  dotnet add Consumer reference Contracts
 8. Install NuGet Packages: Navigate to the Producer and Consumer project directory and install the necessary MassTransit and RabbitMQ packages:
-   dotnet add package MassTransit
-   dotnet add package MassTransit.RabbitMQ
+>  dotnet add package MassTransit  <br>
+>  dotnet add package MassTransit.RabbitMQ  <br>
 9. Implement Classes: Implement the Producer, SagaConsumer, and related classes in their respective projects as outlined in the previous sections.
 10. Build the Application: Build the solution to ensure everything is set up correctly:
-   dotnet build
+>  dotnet build
 11. Run the Application: Run the Consumer application:
-   dotnet run
+>  dotnet run
 12. Monitor RabbitMQ: Open the RabbitMQ Management UI at http://localhost:15672 to monitor queues and exchanges. You can log in with the default credentials (guest/guest).
 
 ## Conclusion
