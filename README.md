@@ -48,20 +48,22 @@ MassTransitHostOptions are configured to specify the wait time until the bus sta
    rabbitmq-server
 4. Create a New Solution: Create a new solution using the .NET CLI or Visual Studio:
    dotnet new sln -n MyRabbitMqApp
-5. Create Projects: Create the Contracts and Consumer projects:
+5. Create Projects: Create the Producer, Contracts and Consumer projects:
+   dotnet new console -n Producer
    dotnet new classlib -n Contracts
    dotnet new console -n Consumer
-6. Add References: Add a reference from the Consumer project to the Contracts project:
+7. Add References: Add a reference of Contracts to Producer and the Consumer project:
+   dotnet add Producer reference Contracts
    dotnet add Consumer reference Contracts
-7. Install NuGet Packages: Navigate to the Consumer project directory and install the necessary MassTransit and RabbitMQ packages:
-   cd Consumer
+8. Install NuGet Packages: Navigate to the Producer and Consumer project directory and install the necessary MassTransit and RabbitMQ packages:
+   dotnet add package MassTransit
    dotnet add package MassTransit.RabbitMQ
-8. Implement Classes: Implement the Producer, SagaConsumer, and related classes in their respective projects as outlined in the previous sections.
-9. Build the Application: Build the solution to ensure everything is set up correctly:
+9. Implement Classes: Implement the Producer, SagaConsumer, and related classes in their respective projects as outlined in the previous sections.
+10. Build the Application: Build the solution to ensure everything is set up correctly:
    dotnet build
-10. Run the Application: Run the Consumer application:
-   dotnet run --project Consumer
-11. Monitor RabbitMQ: Open the RabbitMQ Management UI at http://localhost:15672 to monitor queues and exchanges. You can log in with the default credentials (guest/guest).
+11. Run the Application: Run the Consumer application:
+   dotnet run
+12. Monitor RabbitMQ: Open the RabbitMQ Management UI at http://localhost:15672 to monitor queues and exchanges. You can log in with the default credentials (guest/guest).
 
 ## Conclusion
 This application serves as a robust foundation for building message-driven applications using MassTransit and RabbitMQ. With the implemented saga state machine, quorum queues, and dead-letter exchanges, developers can create reliable systems capable of handling complex workflows while maintaining data integrity. The detailed setup instructions ensure that developers can get the application running smoothly and efficiently.
