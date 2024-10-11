@@ -1,10 +1,11 @@
-﻿using Contracts;
+using Contracts;
 using MassTransit;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using RabbitMQ.Client;
 using System.IO.Compression;
 
-namespace Producer
+namespace MassTransitRabbitMQ
 {
     public class Program
     {
@@ -18,7 +19,7 @@ namespace Producer
 
             try
             {
-                // Create a send endpoint targeting the topic exchange.
+                // Create a send endpoint targeting the fanout exchange.
                 var sendEndpoint = await busControl.GetSendEndpoint(new Uri("rabbitmq://localhost/notification-exchange"));
 
                 // Send a batch of 10 compressed notification messages.
@@ -34,12 +35,13 @@ namespace Producer
                         CompressedMessage = compressedMessage
                     });
 
-                    Console.WriteLine($"Sent message {i}"); // Log message to console
+                    Console.WriteLine($"Sent message {i} to the fanout exchange"); // Log message to console
                 }
             }
             finally
             {
                 await busControl.StopAsync(); // Stop the bus when done
+                Console.ReadLine();
             }
         }
 
@@ -71,6 +73,13 @@ namespace Producer
                         x.UsingRabbitMq((context, cfg) =>
                         {
                             cfg.Host("rabbitmq://localhost", h => { }); // Connect to RabbitMQ instance
+                            cfg.ExchangeType = ExchangeType.Fanout; // Use Fanout exchange
+
+                            // Define the fanout exchange for the SendNotification class
+                            cfg.Publish<SendNotification>(p =>
+                            {
+                                p.ExchangeType = ExchangeType.Fanout; // Set exchange to fanout
+                            });
 
                             // Set kebab-case naming convention for RabbitMQ message topology.
                             cfg.MessageTopology.SetEntityNameFormatter(new KebabCaseEntityNameFormatter());
