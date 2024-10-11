@@ -1,10 +1,11 @@
-﻿using Consumer;
+using Consumer;
 using Contracts;
 using MassTransit;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using RabbitMQ.Client;
 
-namespace SagaConsumer
+namespace MassTransitRabbitMQ
 {
     public class Program
     {
@@ -80,6 +81,12 @@ namespace SagaConsumer
 
                                 // Limit the total size of messages in the queue to 10 MB
                                 e.SetQueueArgument("x-max-length-bytes", 10485760);
+
+                                // Bind the queue to the fanout exchange
+                                e.Bind("notification-exchange", x =>
+                                {
+                                    x.ExchangeType = ExchangeType.Fanout; // Set exchange type to fanout
+                                });
 
                                 // Configure the saga state machine for processing messages
                                 e.ConfigureSaga<NotificationSagaState>(context, sagaCfg =>
