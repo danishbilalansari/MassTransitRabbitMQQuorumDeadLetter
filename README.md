@@ -5,7 +5,7 @@ This guide details the implementation of a RabbitMQ consumer application using M
 
 ## Key Components of the Application
 ### Producer and Consumer Architecture
-The Producer is responsible for sending notifications to a RabbitMQ topic exchange. It compresses the messages to reduce their size before sending them. The Consumer listens for incoming messages from the exchange and processes them using a saga state machine, which maintains state across multiple interactions and handles complex business logic.
+The Producer is responsible for sending notifications to a RabbitMQ fanout exchange. It compresses the messages to reduce their size before sending them. The Consumer listens for incoming messages from the exchange and processes them using a saga state machine, which maintains state across multiple interactions and handles complex business logic.
 ### Quorum Queues
 Quorum queues enhance the durability and availability of messages by replicating them across multiple nodes in a RabbitMQ cluster. This ensures that even in the event of node failures, messages remain accessible and are not lost, making quorum queues suitable for production environments where data integrity is critical.
 ### Dead-Letter Exchanges (DLX)
@@ -14,7 +14,7 @@ Dead-letter exchanges are used to manage messages that cannot be processed succe
 The solution is organized into two main projects:
 - Contracts: This project contains shared data contracts, such as SendNotification, that are utilized by both the producer and consumer.
 - Consumer: This project implements the message consumer using a saga state machine to process messages from RabbitMQ effectively.
-- 
+  
 ## Key Classes and Their Responsibilities
 ### Producer Class
 This class is responsible for establishing a connection to RabbitMQ and sending compressed notification messages to the designated exchange. It utilizes GZip compression to reduce the size of the messages, which can enhance performance during message transmission.
@@ -37,9 +37,9 @@ The application utilizes IHostBuilder for managing the lifecycle of the applicat
 MassTransitHostOptions are configured to specify the wait time until the bus starts and the timeout settings for stopping the bus, which align with the queue expiration and message TTL settings.
 
 ## Retention Policy
-•	x-message-ttl: This argument sets the time-to-live for messages in the queue. In this implementation, it is set to 60,000 milliseconds (or 1 minute), meaning that any message not consumed within this time frame will be discarded.
-•	x-expires: This argument determines how long the queue will remain in existence if it is not used. It is set to 3,600,000 milliseconds (or 1 hour) in this implementation. If no messages are sent or received from the queue during this time, the queue will be automatically deleted, thus releasing resources.
-•	Dead-Letter Exchange: Messages that are not successfully processed after the defined number of retries are sent to a dead-letter exchange. This allows for inspection and handling of failed messages without losing them. The application is configured to use a dead-letter exchange named 'dead-letter-exchange'.
+-	x-message-ttl: This argument sets the time-to-live for messages in the queue. In this implementation, it is set to 60,000 milliseconds (or 1 minute), meaning that any message not consumed within this time frame will be discarded.
+-	x-expires: This argument determines how long the queue will remain in existence if it is not used. It is set to 3,600,000 milliseconds (or 1 hour) in this implementation. If no messages are sent or received from the queue during this time, the queue will be automatically deleted, thus releasing resources.
+-	Dead-Letter Exchange: Messages that are not successfully processed after the defined number of retries are sent to a dead-letter exchange. This allows for inspection and handling of failed messages without losing them. The application is configured to use a dead-letter exchange named 'dead-letter-exchange'.
 
 ## Installation Steps
 1. Install .NET SDK: Ensure that the .NET SDK is installed on your machine. You can download it from the .NET official website.
